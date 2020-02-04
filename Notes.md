@@ -14,62 +14,30 @@
     * Minimize divergence between development and production, enabling continuous deployment for maximum agility;
     * And can scale up without significant changes to tooling, architecture, or development practices.
 
-#### My Current Tech Stack - What I use and what I am learning.
-*Inspired by Cloud Native.*
-* **App Definition and Development**
-  * Databases:
-    * Cockroach,
-    * Redis,
-    * Mongo
-  * Streaming and Messages:
-    * RabbitMQ
-  * App Definition and Image Build:
-    * docker-compose,
-    * Helm
-  * CI/CD:
-    * GitLab,
-    * Jenkins,
-    * Bamboo,
-    * Azure Pipelines,
-    * TravisCI,
-    * Heroku
-* **Orchestration and Management**
-  * Scheduling and Orchestration:
-    * Kubernetes
-  * Coordination and Service Discovery:
-    * etcd
-  * Service Proxy
-    * nginx
-* **Runtime**
-  * Cloud Native Network:
-    * Calico,
-    * Flannel
-* **Provisioning**
-  * Automation and Config:
-    * Terraform
-  * Container Registry:
-    * Harbor,
-    * Docker,
-    * Azure,
-    * Kraken
-  * Security and Compliance:
-    * cert-manager,
-    * Notary,
-    * OPA,
-    * TUF
-  * Key Management:
-    * Vault
-* **Platform**
-  * Distribution:
-    * Docker,
-    * Typhoon
-* **Observation and Analysis**
-  * Monitoring:
-    * prometheus
-  * Logging:
-    * Splunk,
-    * fluentd,
-    * logstash
-  * Chaos Engineering:
-    * chaostoolkit,
-    * Gremlin
+**Enter Terraform**
+
+* Terraform, is a _form_ of infrastructure-as-code. Infrastructure as code benefits us in many ways, namely, we:
+  * No longer need click around webUI or ssh to a server to manually execute a command.
+    * Code is written to define, provision, and manage our infrastructure.
+  * Automate our entire provisioning and deployment process. => Faster and more reliable than any manual method.
+  * Represent the state of our infrastructure in files that anyone can read! => No more single points of failure, i.e. sysadmin.
+  * Store those source files in standard version control. => Our entire infrastructure history is captured via the commit log, which assists with debugging and rollback.
+  * Validate each infrastructure change through code reviews and automated tests.
+  * May create/buy a library of reusable, documented, battle-tested infrastructure code. => Easier to scale and evolve our infrastructure.
+
+* Why Terraform?
+  * Config Management vs Provisioning:
+    * Terraform is deisigned to provision servers themselves (plus load balancers, databases, network config)
+
+
+### Typhooon - TERRAFORM CONCEPTS
+* Typhoon config background:
+  * Nodes:
+    * ALL nodes in cluster provision themselves from the declarative config.
+    * Nodes run a `kubelet` servcice and register themselves with the control plane to join the cluster.
+    * Run `kube-proxy` and `calico`.
+  * Controllers:
+    * Controller nodes are scheduled to run the K8s `apiserver`, `scheduler`, `controller-manager`, `coredns`, and `kube-proxy`
+    * A fully qualified domain (cluster.maxzintel.dev) resolving to a network load balancer or round-robin DNS is used to refer to the control plane.
+  * Workers:
+    * workers register with the control plane and run application workloads.
