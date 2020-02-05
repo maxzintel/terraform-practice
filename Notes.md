@@ -41,3 +41,63 @@
     * A fully qualified domain (cluster.maxzintel.dev) resolving to a network load balancer or round-robin DNS is used to refer to the control plane.
   * Workers:
     * workers register with the control plane and run application workloads.
+
+* Basics:
+  * Terraform config files declare **resources** that Terraform should manage.
+    * ex: infrastructure components created through a provider API (compute instances, dns records, etc.) or local assests like TLS certificates and config files.
+```terraform
+  # Declare an instance
+  resource "google_compute_instance" "pet" {...}
+```
+  * The `terraform` tool parses configs, reconciles the desired state with actual state, and updates resources to reach desired state. ex: `terraform plan` => `terraform apply` commands.
+  * With Typhoon, we can manage clusters using terraform.
+
+* Modules:
+  * Terraform modules allow a collection of resources to be configured and managed together.
+  * Typhoon provides a module for each supported platform and OS.
+```terraform
+  module "yavin" {
+    source = "git::https://github..."
+    cluster_name = "yavin"
+    ...
+  }
+```
+
+* Versioning:
+  * Modules are updated regularly. Set the version via **release tag** or **commit hash**.
+```terraform
+  ...
+  source = "git::https://github.../kubernetes?ref=hash"
+  ...
+```
+  * Set the version to prevent the command `terraform get --update` from fetching the wrong version. If this were to occur, your cluster resources would be altered.
+
+* Organize:
+  * Maintain Terraform configs for live infrastructure in a versioned repo.
+  * Organize configs to reflect resources that should be managed together in a `terraform apply` invocation.
+    * Ex: If you have two k8s clusters, the terraform docs for each should be separated such that you may `apply` one set without any interaction with the other.
+
+* State:
+  * Terraform writes state data, including secrets, to a `terraform.tfstate` file.
+    * Add a `.gitignore` to prevent the state from being commited to any public repositories.
+```
+# .gitignore
+*.tfstate
+*.tfstate.backup
+.terraform/
+```
+
+* Remote Backend:
+  * Store state in a remote bucket like Google Storage or S3.
+```terraform
+terraform {
+  backend "gcs" {
+    credentials = "/path/to/credentials.json"
+    project     = "project-id"
+    bucket      = "bucket-id"
+    path        = "metal.tfstate"
+  }
+}
+```
+
+
